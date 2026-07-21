@@ -1,0 +1,20 @@
+{
+    "sources": [
+        {
+            "name": "DNB",
+            "feed_url": "https://www.dnb.nl/en/rss/16454/4613",
+            "language": "en"
+        },
+
+        {
+            "name": "AFM",
+            "feed_url": "https://www.afm.nl/nl-nl/rss-feed/nieuws-professionals",
+            "language": "nl"
+        }
+
+    ],
+    "request":{
+        "user_agent": "dutch-regulatory-pipeline",
+        "timeout_seconds": 10
+    }
+}

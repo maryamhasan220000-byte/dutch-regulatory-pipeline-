@@ -1,0 +1,41 @@
+
+version: 2
+
+models:
+  - name: mart_publications_monthly_trend
+    description: "Monthly publication count per source, with month-over-month change."
+    columns:
+      - name: source
+        tests:
+          - not_null
+      - name: month
+        tests:
+          - not_null
+
+
+
+  - name: mart_above_average_months
+    description: "Flags whether each source's monthly count exceeded their own historical average"
+    columns:
+      - name: above_average
+        tests:
+          - not_null
+      - name: source
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_publications')
+              field: source
+        
+
+  - name: mart_recent_activity_log
+    description: "Incremental log of individual publications, appened as new records arrive."
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unqiue
+      - name: fetched_at 
+        tests:
+          - not_null 
+        

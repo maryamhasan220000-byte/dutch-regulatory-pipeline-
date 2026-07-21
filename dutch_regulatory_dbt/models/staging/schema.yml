@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_publications
+    description: "Cleaned publications data, sourced from the raw publications table"
+    columns:
+      - name : guid
+        tests: 
+          - unique
+          - not_null
+      - name: source
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['dnb', 'afm']
+      - name: title 
+        tests: 
+          - not_null
+      - name: link 
+        tests:
+          - not_null

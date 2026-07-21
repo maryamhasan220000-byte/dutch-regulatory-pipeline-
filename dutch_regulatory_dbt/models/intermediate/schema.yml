@@ -1,0 +1,12 @@
+version: 2
+models:
+   - name: int_source_historical_averages
+     descriptions: "Each source's overall average number of publications per month"
+     columns:
+       - name: source
+         tests:
+           - not_null
+           - unique
+       - name: avg_monthly_publications
+         tests:
+           - not_null
