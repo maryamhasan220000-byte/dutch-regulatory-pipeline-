@@ -45,8 +45,8 @@ jobs:
                 host: ${{ secrets.AZURE_DB_HOST }}
                 user: ${{ secrets.AZURE_DB_USER }}
                 pass:  ${{ secrets.AZURE_DB_PASSWORD }}
-                port: 5432
-                dbname: dutchregulatory
+                port: ${{ secrets.AZURE_DB_PORT}}
+                dbname: ${{ secrets.AZURE_DB_NAME}}
                 schema: dbt_prod
                 threads: 4
                 sslmode: require
