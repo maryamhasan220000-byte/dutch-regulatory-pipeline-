@@ -34,7 +34,7 @@ models:
       - name: id
         tests:
           - not_null
-          - unqiue
+          - unique
       - name: fetched_at 
         tests:
           - not_null 
