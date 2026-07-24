@@ -1,0 +1,59 @@
+name: Dutch Regulatory Pipline CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium
+      - name: Run tests
+        run: pytest -v
+  dbt-test:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dbt
+        run: pip install dbt-postgres
+      - name: Run dbt tests
+        working-directory: ./dutch_regulatory_dbt
+        env:
+          DBT_DB_HOST: ${{ secrets.AZURE_DB_HOST }}
+          DBT_DB_USER: ${{ secrets.AZURE_DB_USER }}
+          DBT_DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
+        run: |
+          dbt run --target prod
+          dbt test --target prod
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [test, dbt-test]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@4
+      - name: Deploy to Azure Function
+        uses: Azure/functions-action@v1
+        with:
+          app-name: YOUR-FUNCTION-APP-NAME
+          package: ./dutch_regulatory_function
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+
