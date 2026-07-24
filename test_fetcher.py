@@ -23,7 +23,7 @@ def test_fetch_feed_handles_network_failure():
         mock_browser = MagicMock()
         mock_page = MagicMock()
         mock_response = MagicMock()
-        mock_playwright.return_value._enter_.return_value = mock_pw
+        mock_playwright.return_value.__enter__.return_value = mock_pw
 
         mock_pw.chromium.launch.return_value = mock_browser
         mock_browser.new_page.return_value = mock_page
