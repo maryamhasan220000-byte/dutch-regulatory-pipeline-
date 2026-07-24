@@ -33,12 +33,27 @@ jobs:
           python-version: '3.12'
       - name: Install dbt
         run: pip install dbt-postgres
+      - name: Create dbt profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << EOF
+          dutch_regulatory_dbt:
+            target: prod
+            outputs:
+              prod: 
+                type: postgres
+                host: ${{ secrets.AZURE_DB_HOST }}
+                user: ${{ secrets.AZURE_DB_USER }}
+                pass:  ${{ secrets.AZURE_DB_PASSWORD }}
+                port: 5432
+                dbname: dutchregulatory
+                schema: dbt_prod
+                threads: 4
+                sslmode: require
+          EOF
+
       - name: Run dbt tests
         working-directory: ./dutch_regulatory_dbt
-        env:
-          DBT_DB_HOST: ${{ secrets.AZURE_DB_HOST }}
-          DBT_DB_USER: ${{ secrets.AZURE_DB_USER }}
-          DBT_DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
         run: |
           dbt run --target prod
           dbt test --target prod
