@@ -1,6 +1,7 @@
 from unittest.mock import patch, Mock
 from fetcher import fetch_feed
-import requests
+from unittest.mock import patch, Mock, MagicMock
+
 
 def test_fetch_feed_handles_network_failure():
     source_config = {'name': 'DNB', 'feed_url': 'https://fake-url.com'}
@@ -17,11 +18,19 @@ def test_fetch_feed_handles_network_failure():
         </channel>
     </rss>'''
 
-    with patch('fetcher.requests.get') as mock_get:
-        mock_response = Mock()
-        mock_response.text = fake_xml
-        mock_response.raise_for_status = Mock()
-        mock_get.return_value = mock_response 
+    with patch('fetcher.sync_playwright') as mock_playwright:
+        mock_pw = MagicMock()
+        mock_browser = MagicMock()
+        mock_page = MagicMock()
+        mock_response = MagicMock()
+        mock_playwright.return_value._enter_.return_value = mock_pw
+
+        mock_pw.chromium.launch.return_value = mock_browser
+        mock_browser.new_page.return_value = mock_page
+
+        mock_page.goto.return_value = mock_response
+        mock_response.text.return_value = fake_xml
+        
 
         result = fetch_feed(source_config, request_config)
 
