@@ -1,0 +1,9 @@
+azure-functions
+requests
+playwright
+beautifulsoup4
+sqlalchemy
+psycopg2-binary
+python-dotenv
+azure-storage-blob
+pytest
