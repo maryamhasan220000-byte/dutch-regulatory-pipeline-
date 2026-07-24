@@ -10,15 +10,32 @@ logger = get_logger(__name__)
 def get_session():
     load_dotenv()
 
-    db_user = os.getenv('DB_USER')
-    db_password = os.getenv('DB_PASSWORD')
-    db_host = os.getenv('DB_HOST')
-    db_port = os.getenv('DB_PORT')
-    db_name = os.getenv('DB_NAME')
+    ENV = os.getenv('PIPELINE_ENV', 'local')
+    if ENV =='azure':
+        db_user = os.getenv('AZURE_DB_USER')
+        db_password = os.getenv('AZURE_DB_PASSWORD')
+        db_host = os.getenv('AZURE_DB_HOST')
+        db_port = os.getenv('AZURE_DB_PORT')
+        db_name = os.getenv('AZURE_DB_NAME')
+    else:
+        db_user = os.getenv('DB_USER')
+        db_password = os.getenv('DB_PASSWORD')
+        db_host = os.getenv('DB_HOST')
+        db_port = os.getenv('DB_PORT')
+        db_name = os.getenv('DB_NAME')
+    
 
-    connection_string = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?sslmode=require"
+    if ENV == 'azure':
+        connection_string = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?sslmode=require"
+    else:
+        connection_string = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     engine = create_engine(connection_string)
-    Base.metadata.create_all(engine)
+
+    
+        
+
+    
+    
 
     SessionFactory = sessionmaker(bind=engine)
     return SessionFactory()
